@@ -102,7 +102,7 @@ public class AdminController {
     }
 
     @PostMapping("/edit-by-id")
-    public String getEditingPage(@RequestParam("userId") Long userId, Model model) {
+    public String getEditingPage(@RequestParam("userId") @Valid Long userId, Model model) {
         if (userId != null) {
             User user = userService.findUserById(userId);
             if (user != null) {

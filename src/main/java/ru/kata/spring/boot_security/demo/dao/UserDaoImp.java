@@ -11,26 +11,10 @@ import ru.kata.spring.boot_security.demo.models.User;
 import java.util.List;
 import java.util.Optional;
 
-
 @Repository
 public class UserDaoImp implements UserDao {
-
    @PersistenceContext
    private EntityManager entityManager;
-
-   @Override
-   @Transactional(readOnly = true)
-   @Query("Select u from User u left join fetch u.roles")
-   public List<User> getUsersList() {
-      return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
-   }
-
-   @Override
-   @Transactional(readOnly = true)
-   public User getUserById(Long id) {
-      return entityManager.find(User.class, id);
-   }
-
    @Override
    @Transactional
    public Optional<User> findUserById(Long id) {
@@ -55,6 +39,19 @@ public class UserDaoImp implements UserDao {
    @Transactional
    public boolean existsById(Long id) {
       return entityManager.find(User.class, id) != null;
+   }
+
+   @Override
+   @Transactional(readOnly = true)
+   @Query("Select u from User u left join fetch u.roles")
+   public List<User> getUsersList() {
+      return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
+   }
+
+   @Override
+   @Transactional(readOnly = true)
+   public User getUserById(Long id) {
+      return entityManager.find(User.class, id);
    }
 
    @Override
