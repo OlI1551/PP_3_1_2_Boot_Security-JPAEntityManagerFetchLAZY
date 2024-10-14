@@ -8,10 +8,12 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import ru.kata.spring.boot_security.demo.services.UserService;
+
+
 
 
 @Configuration
@@ -19,13 +21,12 @@ import ru.kata.spring.boot_security.demo.services.UserService;
 @EnableTransactionManagement
 @ComponentScan(basePackages = "ru.kata.spring.boot_security.demo")
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private final UserService userService;
-
+    private final UserDetailsService userDetailsService;
     private final SuccessUserHandler successUserHandler;
 
     @Autowired
-    public WebSecurityConfig(UserService userService, SuccessUserHandler successUserHandler) {
-        this.userService = userService;
+    public WebSecurityConfig(UserDetailsService userDetailsService, SuccessUserHandler successUserHandler) {
+        this.userDetailsService = userDetailsService;
         this.successUserHandler = successUserHandler;
     }
 
@@ -53,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService)
+        auth.userDetailsService(userDetailsService)
                 .passwordEncoder(getPasswordEncoder());
     }
 

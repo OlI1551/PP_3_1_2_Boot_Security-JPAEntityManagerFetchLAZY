@@ -13,7 +13,6 @@ import java.util.List;
 
 @Controller
 public class HelloController {
-
 	@GetMapping(value = "/")
 	public String printWelcome(ModelMap model) {
 		List<String> messages = new ArrayList<>();
@@ -25,15 +24,12 @@ public class HelloController {
 		messages.add("with optional user roles!");
 		messages.add("Please, register users before login with the buttons up here...");
 		messages.add("The first user will be assigned the DB administrator -)");
+		messages.add("All the rest persons registering from Welcome page will be assigned users");
+		messages.add("And only DB administrator is authorized to assign new admins on the admin page");
+		messages.add("All admins are authorized to assign users and admins on the admin page");
+
+
 		model.addAttribute("messages", messages);
 		return "index";
-	}
-
-	@GetMapping("/user")
-	public String showUserPage(Model model) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		User user = (User) authentication.getPrincipal();
-		model.addAttribute("user", user);
-		return "user";
 	}
 }

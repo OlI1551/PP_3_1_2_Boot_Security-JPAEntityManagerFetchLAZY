@@ -6,17 +6,8 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Table;
-import javax.persistence.Column;
-import javax.persistence.Transient;
-import javax.persistence.ManyToMany;
-import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
-import javax.persistence.JoinColumn;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import javax.validation.constraints.Email;
@@ -49,7 +40,7 @@ public class User implements UserDetails {
 
    @Column(name = "username")
    @NotEmpty(message = "Username should not be empty")
-   @Size(min = 2, max = 20, message = "Last name should be between 2 and 20 characters")
+   @Size(min = 2, max = 20, message = "User name should be between 2 and 20 characters")
    private String username;
 
    @Column(name = "password")
@@ -61,13 +52,11 @@ public class User implements UserDetails {
    @NotEmpty(message = "Password Confirm should not be empty")
    private String passwordConfirm;
 
-   @ManyToMany(fetch = FetchType.LAZY)
-   @LazyCollection(LazyCollectionOption.EXTRA)
-   @Fetch(FetchMode.JOIN)
+   @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
    @JoinTable(
            name = "users_roles",
-           joinColumns = @JoinColumn(name = "users_id"),
-           inverseJoinColumns = @JoinColumn(name = "roles_id")
+           joinColumns = @JoinColumn(name = "user_id"),
+           inverseJoinColumns = @JoinColumn(name = "role_id")
    )
    private Set<Role> roles = new HashSet<>();
 

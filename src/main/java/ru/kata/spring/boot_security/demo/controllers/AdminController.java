@@ -12,7 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.services.RegistrationService;
+import ru.kata.spring.boot_security.demo.security.UserDetailsServiceImpl;
+import ru.kata.spring.boot_security.demo.services.RegistrationServiceImpl;
 import ru.kata.spring.boot_security.demo.services.UserService;
 import ru.kata.spring.boot_security.demo.util.UserValidator;
 import javax.validation.Valid;
@@ -23,16 +24,15 @@ import java.util.List;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-
     private final UserService userService;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final UserValidator userValidator;
-    private final RegistrationService registrationService;
 
     @Autowired
-    public AdminController(UserService userService, UserValidator userValidator, RegistrationService registrationService) {
+    public AdminController(UserService userService, UserDetailsServiceImpl userDetailsServiceImpl, UserValidator userValidator) {
         this.userService = userService;
+        this.userDetailsServiceImpl = userDetailsServiceImpl;
         this.userValidator = userValidator;
-        this.registrationService = registrationService;
     }
 
     @GetMapping("/admin")
@@ -99,9 +99,11 @@ public class AdminController {
             model.addAttribute("passwordError", "Passwords mismatch");
             return "admin/new";
         }
-        if (!registrationService.registerUser(user, roleAdmin)){
+        if (userDetailsServiceImpl.loadUserByUsername(user.getUsername()) != null) {
+            model.addAttribute("usernameExistsError", "User with this username already exists");
             return "admin/new";
         }
+        userService.addUser(user, roleAdmin);
         return "redirect:/admin/admin";
     }
 
@@ -124,7 +126,7 @@ public class AdminController {
 
     @PostMapping("/edit")
     public String updateUser(@ModelAttribute("user") @Valid  User editedUser,
-                           BindingResult bindingResult, Model model,
+                             BindingResult bindingResult, Model model,
                              @RequestParam(name = "roleAdmin", defaultValue = "false") boolean roleAdmin) {
         if (bindingResult.hasErrors()) {
             return "admin/edit";
@@ -133,13 +135,12 @@ public class AdminController {
             model.addAttribute("passwordError", "Passwords mismatch");
             return "admin/edit";
         }
-        registrationService.saveUser(editedUser, roleAdmin);
+        userService.updateUser(editedUser, roleAdmin);
         return "redirect:/admin/admin";
     }
 
     @PostMapping("/delete")
     public String deleteUser(@RequestParam("userId") Long userId, Model model) {
-
         if (userId != null) {
             User user = userService.findUserById(userId);
             if (user != null) {
