@@ -57,8 +57,10 @@ public class UserServiceImpl implements UserService {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     @Transactional
-    public void addUser(User user, boolean roleAdmin) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public boolean addUser(User user, boolean roleAdmin) {
+        if (userDao.findByUsername(user.getUsername()) != null) {
+            return false;
+        }
         Set<Role> roles = new HashSet<>();
         roles.add(roleDao.findByRolename("ROLE_USER"));
         if (roleAdmin) {
@@ -67,7 +69,9 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
 
         userDao.addUser(user);
+        return true;
     }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     @Transactional

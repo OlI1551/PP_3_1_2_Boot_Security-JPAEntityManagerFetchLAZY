@@ -3,6 +3,7 @@ package ru.kata.spring.boot_security.demo.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.security.UserDetailsServiceImpl;
-import ru.kata.spring.boot_security.demo.services.RegistrationServiceImpl;
 import ru.kata.spring.boot_security.demo.services.UserService;
 import ru.kata.spring.boot_security.demo.util.UserValidator;
 import javax.validation.Valid;
@@ -25,13 +24,13 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
     private final UserService userService;
-    private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private final UserDetailsService userDetailsService;
     private final UserValidator userValidator;
 
     @Autowired
-    public AdminController(UserService userService, UserDetailsServiceImpl userDetailsServiceImpl, UserValidator userValidator) {
+    public AdminController(UserService userService, UserDetailsService userDetailsService, UserValidator userValidator) {
         this.userService = userService;
-        this.userDetailsServiceImpl = userDetailsServiceImpl;
+        this.userDetailsService = userDetailsService;
         this.userValidator = userValidator;
     }
 
@@ -99,11 +98,10 @@ public class AdminController {
             model.addAttribute("passwordError", "Passwords mismatch");
             return "admin/new";
         }
-        if (userDetailsServiceImpl.loadUserByUsername(user.getUsername()) != null) {
+        if (!userService.addUser(user, roleAdmin)) {
             model.addAttribute("usernameExistsError", "User with this username already exists");
             return "admin/new";
         }
-        userService.addUser(user, roleAdmin);
         return "redirect:/admin/admin";
     }
 
@@ -128,13 +126,11 @@ public class AdminController {
     public String updateUser(@ModelAttribute("user") @Valid  User editedUser,
                              BindingResult bindingResult, Model model,
                              @RequestParam(name = "roleAdmin", defaultValue = "false") boolean roleAdmin) {
+
         if (bindingResult.hasErrors()) {
             return "admin/edit";
         }
-        if (!editedUser.getPassword().equals(editedUser.getPasswordConfirm())){
-            model.addAttribute("passwordError", "Passwords mismatch");
-            return "admin/edit";
-        }
+
         userService.updateUser(editedUser, roleAdmin);
         return "redirect:/admin/admin";
     }

@@ -1,8 +1,6 @@
 package ru.kata.spring.boot_security.demo.dao;
 
 import javax.persistence.*;
-
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.models.User;
 import java.util.List;
@@ -36,7 +34,7 @@ public class UserDaoImpl implements UserDao {
 
    @Override
    public List<User> getUsersList() {
-      return entityManager.createQuery("SELECT u FROM User u JOIN FETCH u.roles", User.class).getResultList();
+      return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
    }
 
    @Override
