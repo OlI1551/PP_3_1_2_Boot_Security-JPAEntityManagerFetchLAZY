@@ -10,6 +10,7 @@ public interface UserService {
     List<User> allUsers();
     List<User> getUsersList(int limit);
     User findUserById(Long userId);
+    User getUserById(Long userId);
     boolean addUser(User user, boolean roleAdmin);
     void updateUser(User user, boolean roleAdmin);
     void deleteUser(Long userId);

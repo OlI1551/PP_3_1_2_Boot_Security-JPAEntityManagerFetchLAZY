@@ -18,7 +18,6 @@ import javax.validation.constraints.Email;
 import javax.persistence.Transient;
 import javax.persistence.ManyToMany;
 import javax.persistence.FetchType;
-import javax.persistence.CascadeType;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import java.util.HashSet;
@@ -62,7 +61,7 @@ public class User implements UserDetails {
    @NotEmpty(message = "Password Confirm should not be empty")
    private String passwordConfirm;
 
-   @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @ManyToMany(fetch = FetchType.LAZY)
    @JoinTable(
            name = "users_roles",
            joinColumns = @JoinColumn(name = "user_id"),

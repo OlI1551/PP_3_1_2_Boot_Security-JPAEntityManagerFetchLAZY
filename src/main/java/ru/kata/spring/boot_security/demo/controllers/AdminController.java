@@ -3,7 +3,6 @@ package ru.kata.spring.boot_security.demo.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,13 +23,11 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
     private final UserService userService;
-    private final UserDetailsService userDetailsService;
     private final UserValidator userValidator;
 
     @Autowired
-    public AdminController(UserService userService, UserDetailsService userDetailsService, UserValidator userValidator) {
+    public AdminController(UserService userService, UserValidator userValidator) {
         this.userService = userService;
-        this.userDetailsService = userDetailsService;
         this.userValidator = userValidator;
     }
 
@@ -49,7 +46,7 @@ public class AdminController {
         User admin = (User) authentication.getPrincipal();
         model.addAttribute("admin", admin);
         if (userId != null) {
-            User user = userService.findUserById(userId);
+            User user = userService.getUserById(userId);
             if (user != null) {
                 List<User> users = new ArrayList<>();
                 users.add(user);
@@ -110,6 +107,8 @@ public class AdminController {
         if (userId != null) {
             User user = userService.findUserById(userId);
             if (user != null) {
+                System.out.println("--------------------------");
+                System.out.println(user);
                 model.addAttribute("user", user);
                 return "admin/edit";
             } else {
@@ -126,11 +125,16 @@ public class AdminController {
     public String updateUser(@ModelAttribute("user") @Valid  User editedUser,
                              BindingResult bindingResult, Model model,
                              @RequestParam(name = "roleAdmin", defaultValue = "false") boolean roleAdmin) {
-
         if (bindingResult.hasErrors()) {
             return "admin/edit";
         }
-
+        System.out.println("-----------------------");
+        System.out.println(editedUser.getPassword());
+        System.out.println(editedUser.getPasswordConfirm());
+        if (!editedUser.getPassword().equals(editedUser.getPasswordConfirm())){
+            model.addAttribute("passwordError", "Passwords mismatch");
+            return "admin/edit";
+        }
         userService.updateUser(editedUser, roleAdmin);
         return "redirect:/admin/admin";
     }
@@ -138,7 +142,7 @@ public class AdminController {
     @PostMapping("/delete")
     public String deleteUser(@RequestParam("userId") Long userId, Model model) {
         if (userId != null) {
-            User user = userService.findUserById(userId);
+            User user = userService.getUserById(userId);
             if (user != null) {
                 userService.deleteUser(userId);
                 return "redirect:/admin/admin";

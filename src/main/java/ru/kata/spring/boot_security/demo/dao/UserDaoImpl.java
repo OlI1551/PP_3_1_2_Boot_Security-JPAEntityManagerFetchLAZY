@@ -2,18 +2,16 @@ package ru.kata.spring.boot_security.demo.dao;
 
 import javax.persistence.*;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.models.User;
 import java.util.List;
 import java.util.Optional;
+
 
 @Repository
 public class UserDaoImpl implements UserDao {
    @PersistenceContext
    private EntityManager entityManager;
-   @Override
-   public Optional<User> findUserById(Long id) {
-      return Optional.ofNullable(entityManager.find(User.class, id));
-   }
 
    @Override
    public User findByUsername(String username) {
@@ -35,6 +33,12 @@ public class UserDaoImpl implements UserDao {
    @Override
    public List<User> getUsersList() {
       return entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
+   }
+
+   @Override
+   @Transactional
+   public Optional<User> findUserById(Long id) {
+      return Optional.ofNullable(entityManager.find(User.class, id));
    }
 
    @Override

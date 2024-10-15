@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
     <title>Admin page</title>
     <link rel="stylesheet" type="text/css"
@@ -53,7 +52,8 @@
 <div th:if="${users}">
     <h2><u>Users List</u></h2>
     <p style="color:red" th:if="${warning}" th:text="${warning}"></p>
-    <h2><table>
+    <h2>
+        <table>
         <tr>
             <th>Id</th>
             <th>FirstName</th>
@@ -63,14 +63,15 @@
             <th>Authorities</th>
         </tr>
         <tr th:each="user : ${users}">
-            <td th:utext="${user.getId()}"></td>
-            <td th:utext="${user.getFirstName()}"></td>
-            <td th:utext="${user.getLastName()}"></td>
-            <td th:utext="${user.getEmail()}"></td>
-            <td th:utext="${user.getUsername()}"></td>
-            <td th:utext="${user.getAuthorities()}"></td>
+            <td th:text="${user.getId()}"></td>
+            <td th:text="${user.getFirstName()}"></td>
+            <td th:text="${user.getLastName()}"></td>
+            <td th:text="${user.getEmail()}"></td>
+            <td th:text="${user.getUsername()}"></td>
+            <td th:text="${user.getAuthorities()}"></td>
         </tr>
-    </table></h2>
+        </table>
+    </h2>
 </div>
 <div>
     <br>

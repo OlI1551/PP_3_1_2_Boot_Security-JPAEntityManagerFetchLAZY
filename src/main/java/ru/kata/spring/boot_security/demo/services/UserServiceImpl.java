@@ -2,8 +2,6 @@ package ru.kata.spring.boot_security.demo.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +9,6 @@ import ru.kata.spring.boot_security.demo.dao.RoleDao;
 import ru.kata.spring.boot_security.demo.dao.UserDao;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +34,12 @@ public class UserServiceImpl implements UserService {
     public User findUserById(Long userId) {
         Optional<User> userFromDb = userDao.findUserById(userId);
         return userFromDb.orElse(null);
+    }
+
+    @Override
+    @Transactional (readOnly = true)
+    public User getUserById(Long userId) {
+        return userDao.getUserById(userId);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
@@ -67,7 +70,7 @@ public class UserServiceImpl implements UserService {
             roles.add(roleDao.findByRolename("ROLE_ADMIN"));
         }
         user.setRoles(roles);
-
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDao.addUser(user);
         return true;
     }
@@ -81,6 +84,8 @@ public class UserServiceImpl implements UserService {
         userFromDB.setLastName(user.getLastName());
         userFromDB.setEmail(user.getEmail());
         userFromDB.setUsername(user.getUsername());
+        userFromDB.setPassword(user.getPassword());
+        userFromDB.setPasswordConfirm(user.getPasswordConfirm());
         Set<Role> roles = new HashSet<>();
         roles.add(roleDao.findByRolename("ROLE_USER"));
         if (roleAdmin) {
@@ -88,7 +93,6 @@ public class UserServiceImpl implements UserService {
         }
         userFromDB.setRoles(roles);
         userFromDB.setPassword(passwordEncoder.encode(user.getPassword()));
-
         userDao.updateUser(userFromDB);
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")

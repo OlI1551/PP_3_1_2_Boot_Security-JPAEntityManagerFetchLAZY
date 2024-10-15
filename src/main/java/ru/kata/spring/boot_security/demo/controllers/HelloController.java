@@ -23,8 +23,6 @@ public class HelloController {
 		messages.add("All the rest persons registering from Welcome page will be assigned users");
 		messages.add("And only DB administrator is authorized to assign new admins on the admin page");
 		messages.add("All admins are authorized to assign users and admins on the admin page");
-
-
 		model.addAttribute("messages", messages);
 		return "index";
 	}

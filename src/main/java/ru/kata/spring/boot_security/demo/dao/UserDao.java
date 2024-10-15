@@ -6,11 +6,10 @@ import java.util.Optional;
 
 
 public interface UserDao {
-   Optional<User> findUserById(Long id);
    User findByUsername(String username);
    boolean existsById(Long id);
-
    List<User> getUsersList();
+   Optional<User> findUserById(Long id);
    User getUserById(Long id);
    void addUser(User user);
    void updateUser(User user);
