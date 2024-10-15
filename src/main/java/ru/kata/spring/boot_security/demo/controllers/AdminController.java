@@ -107,8 +107,6 @@ public class AdminController {
         if (userId != null) {
             User user = userService.findUserById(userId);
             if (user != null) {
-                System.out.println("--------------------------");
-                System.out.println(user);
                 model.addAttribute("user", user);
                 return "admin/edit";
             } else {
@@ -128,9 +126,6 @@ public class AdminController {
         if (bindingResult.hasErrors()) {
             return "admin/edit";
         }
-        System.out.println("-----------------------");
-        System.out.println(editedUser.getPassword());
-        System.out.println(editedUser.getPasswordConfirm());
         if (!editedUser.getPassword().equals(editedUser.getPasswordConfirm())){
             model.addAttribute("passwordError", "Passwords mismatch");
             return "admin/edit";

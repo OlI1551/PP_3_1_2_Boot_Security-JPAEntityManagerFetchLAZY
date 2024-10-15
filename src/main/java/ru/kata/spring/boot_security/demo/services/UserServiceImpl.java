@@ -41,12 +41,14 @@ public class UserServiceImpl implements UserService {
     public User getUserById(Long userId) {
         return userDao.getUserById(userId);
     }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     @Transactional (readOnly = true)
     public List<User> allUsers() {
         return userDao.getUsersList();
     }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     @Transactional (readOnly = true)
@@ -57,6 +59,7 @@ public class UserServiceImpl implements UserService {
             return userDao.getUsersList().stream().limit(limit).collect(Collectors.toList());
         }
     }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     @Transactional
@@ -95,6 +98,7 @@ public class UserServiceImpl implements UserService {
         userFromDB.setPassword(passwordEncoder.encode(user.getPassword()));
         userDao.updateUser(userFromDB);
     }
+
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     @Transactional

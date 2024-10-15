@@ -15,6 +15,7 @@
     </style>
 </head>
 <body>
+<div style="text-align: center;">
 <h1 style="color:darkgreen">Welcome to Index PAGE!</h1>
 <div>
     <a href="/login"><button>Login</button></a>
@@ -24,10 +25,12 @@
 </div>
 <div style="background-color:#96D4D4">
     <br>
+    <span style="font-size: 35px; font-weight: 900; text-shadow: 3px 2px cornflowerblue">Hello!</span>
     <th:block th:each="msg : ${messages}">
-        <h1 th:text="${msg}"></h1>
+        <h2 th:text="${msg}"></h2>
     </th:block>
     <br>
+</div>
 </div>
 </body>
 </html>

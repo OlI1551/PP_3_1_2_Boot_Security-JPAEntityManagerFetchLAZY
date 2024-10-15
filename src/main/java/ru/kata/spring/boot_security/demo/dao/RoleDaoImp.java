@@ -1,18 +1,16 @@
 package ru.kata.spring.boot_security.demo.dao;
 
-
 import org.springframework.stereotype.Repository;
-
 import ru.kata.spring.boot_security.demo.models.Role;
-
-
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 
 @Repository
 public class RoleDaoImp implements RoleDao {
-
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -32,14 +30,7 @@ public class RoleDaoImp implements RoleDao {
     public List<Role> getRolesList() {
         return entityManager.createQuery("SELECT r FROM Role r", Role.class).getResultList();
     }
-    @Override
-    public Role getRoleById(Long id) {
-        if (entityManager.find(Role.class, id) == null) {
-            throw new EntityNotFoundException(String.format("Role with ID '%s'  not found", id));
-        }
-        return entityManager.find(Role.class, id);
 
-    }
     @Override
     public void addRole(Role role) {
         entityManager.persist(role);

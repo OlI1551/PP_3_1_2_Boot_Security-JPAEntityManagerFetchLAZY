@@ -14,8 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 
-
-
 @Configuration
 @EnableWebSecurity
 @EnableTransactionManagement

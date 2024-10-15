@@ -1,11 +1,7 @@
 package ru.kata.spring.boot_security.demo.models;
 
-
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Column;
@@ -24,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Collection;
 import java.util.Objects;
+
 
 @Entity
 @Table(name = "users")
